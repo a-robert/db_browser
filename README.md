@@ -1,6 +1,6 @@
 *Simple db browser for simple db.*
 
-###How to run
+#How to run
 
 1) `npm i -g nodemon`
 2) `npm i`  
