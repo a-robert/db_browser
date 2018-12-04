@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Students</title>
+  <meta charset="utf-8">
+  <meta name="format-detection" content="telephone=no"/>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header></header>
+<div class="container">
+  <br><br>
+  <div class="actions">
+    <button type="button" data-api="students" class="btn btn-primary get-info">Get Students</button>
+    <button type="button" data-api="groups" class="btn btn-primary get-info">Get Groups</button>
+    <button type="button" data-api="grades" class="btn btn-primary get-info">Get Grades</button>
+    <button type="button" data-api="subjects" class="btn btn-primary get-info">Get Subjects</button>
+    <button type="button" data-api="summary" class="btn btn-primary get-info">Get Summary</button>
+  </div>
+  <br>
+  <br>
+  <div class="actions">
+    <button type="button" data-api="students" class="btn btn-primary add-info">Add Student</button>
+    <button type="button" data-api="groups" class="btn btn-primary add-info">Add Group</button>
+    <button type="button" data-api="grades" class="btn btn-primary add-info">Add Grade</button>
+    <button type="button" data-api="subjects" class="btn btn-primary add-info">Add Subject</button>
+  </div>
+  <br><br>
+  <div class="scrollable-area">
+    <table class="table table-striped data-table">
+    </table>
+  </div>
+
+  <div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add data</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form class="add-data-form" id="add-data-form" method="post">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" form="add-data-form" class="btn btn-primary">Add</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<footer></footer>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

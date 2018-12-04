@@ -1,0 +1,14 @@
+const config = {
+  dbConnection: {
+    client: 'mysql',
+    connection: {
+      host: 'localhost',
+      user: 'test',
+      password: 'test',
+      port: '3306',
+      database: 'dekanat'
+    }
+  }
+};
+
+module.exports = config;
