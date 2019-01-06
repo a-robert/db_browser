@@ -42,14 +42,32 @@ router.get('/:id', (req, res) => {
   });
 });
 
-router.post('/', (req, res) => {
+router.put('/:id', (req, res) => {
   let group = req.body.group;
   let fullName = req.body.fullName;
   let birthdate = req.body.birthDate;
   let address = req.body.address;
   let phoneNumber = req.body.phoneNumber;
 
-  console.log(group, fullName, birthdate, address, phoneNumber);
+  if (!group || !fullName || !birthdate || !address || !phoneNumber) {
+    return sendError(res, 422, 'Missing parameters');
+  }
+
+  student.updateStudent(req.params.id, group, fullName, birthdate, address, phoneNumber).then(() => {
+    return res.status(200).json({
+      status: 'OK'
+    });
+  }, (e) => {
+    sendError(res, 500, e);
+  });
+});
+
+router.post('/', (req, res) => {
+  let group = req.body.group;
+  let fullName = req.body.fullName;
+  let birthdate = req.body.birthDate;
+  let address = req.body.address;
+  let phoneNumber = req.body.phoneNumber;
 
   if (!group || !fullName || !birthdate || !address || !phoneNumber) {
     return sendError(res, 422, 'Missing parameters');

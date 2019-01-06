@@ -14,6 +14,14 @@ class Group {
     });
   }
 
+  updateGroup(id, name) {
+    return db(this.table)
+      .where('id', id)
+      .update({
+        name
+      });
+  }
+
   getGroup(id) {
     return db(this.table).select().where('id', id)
   }

@@ -42,6 +42,24 @@ router.get('/:id', (req, res) => {
   });
 });
 
+router.put('/:id', (req, res) => {
+  let studentId = req.body.studentId;
+  let subjectId = req.body.subjectId;
+  let gradeValue = req.body.grade;
+
+  if (!studentId || !subjectId || !gradeValue) {
+    return sendError(res, 422, 'Missing parameters');
+  }
+
+  grade.updateGrade(req.params.id, studentId, subjectId, gradeValue).then(() => {
+    return res.status(200).json({
+      status: 'OK'
+    });
+  }, (e) => {
+    sendError(res, 500, e)
+  });
+});
+
 router.post('/', (req, res) => {
   let studentId = req.body.studentId;
   let subjectId = req.body.subjectId;

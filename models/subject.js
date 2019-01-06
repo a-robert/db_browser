@@ -14,12 +14,19 @@ class Subject {
     });
   }
 
+  updateSubject(id, name) {
+    return db(this.table).where('id', id)
+      .update({
+        name
+      });
+  }
+
   getSubject(id) {
-    return db(this.table).select().where('id', id)
+    return db(this.table).select().where('id', id);
   }
 
   getSubjects() {
-    return db(this.table).select()
+    return db(this.table).select();
   }
 }
 

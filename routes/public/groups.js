@@ -41,6 +41,22 @@ router.get('/:id', (req, res) => {
   });
 });
 
+router.put('/:id', (req, res) => {
+  let name = req.body.name;
+
+  if (!name) {
+    return sendError(res, 422, 'Missing parameters');
+  }
+
+  group.updateGroup(req.params.id, name).then(() => {
+    return res.status(200).json({
+      status: 'OK'
+    });
+  }, (e) => {
+    sendError(res, 500, e)
+  });
+});
+
 router.post('/', (req, res) => {
   let name = req.body.name;
 

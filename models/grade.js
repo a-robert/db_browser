@@ -16,6 +16,16 @@ class Grade {
     });
   }
 
+  updateGrade(id, student_id, subject_id, grade) {
+    return db(this.table)
+      .where('id', id)
+      .update({
+        student_id,
+        subject_id,
+        grade
+      });
+  }
+
   getSummary() {
     return db(this.table)
       .join('Students', `${this.table}.student_id`, '=', 'Students.id')

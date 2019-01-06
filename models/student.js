@@ -18,12 +18,23 @@ class Student {
     });
   }
 
+  updateStudent(id, group, full_name, birthdate, address, phone_number) {
+    return db(this.table).where('id', id)
+      .update({
+        group,
+        full_name,
+        birthdate,
+        address,
+        phone_number
+      });
+  }
+
   getStudent(id) {
-    return db(this.table).select().where('id', id)
+    return db(this.table).select().where('id', id);
   }
 
   getStudents() {
-    return db(this.table).select()
+    return db(this.table).select();
   }
 }
 
