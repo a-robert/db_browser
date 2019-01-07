@@ -19,7 +19,6 @@ function sendError(res, code, error) {
   });
 }
 
-
 /*
  ====================================================
  /HELPERS
@@ -30,7 +29,7 @@ router.get('/', (req, res) => {
   student.getStudents().then((result) => {
     return res.status(200).json(camelcaseKeys(result));
   }, (e) => {
-    sendError(res, 500, e)
+    sendError(res, 500, e);
   });
 });
 
@@ -38,7 +37,17 @@ router.get('/:id', (req, res) => {
   student.getStudent(req.params.id).then((result) => {
     return res.status(200).json(camelcaseKeys(result));
   }, (e) => {
-    sendError(res, 500, e)
+    sendError(res, 500, e);
+  });
+});
+
+router.delete('/:id', (req, res) => {
+  student.deleteStudent(req.params.id).then(() => {
+    return res.status(200).json({
+      status: 'OK'
+    });
+  }, (e) => {
+    sendError(res, 500, e);
   });
 });
 

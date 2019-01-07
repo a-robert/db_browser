@@ -28,6 +28,11 @@ class Subject {
   getSubjects() {
     return db(this.table).select();
   }
+
+  deleteSubject(id) {
+    return db(this.table).where('id', id)
+      .del();
+  }
 }
 
 module.exports = new Subject();

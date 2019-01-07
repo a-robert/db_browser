@@ -23,11 +23,16 @@ class Group {
   }
 
   getGroup(id) {
-    return db(this.table).select().where('id', id)
+    return db(this.table).select().where('id', id);
   }
 
   getGroups() {
-    return db(this.table).select()
+    return db(this.table).select();
+  }
+
+  deleteGroup(id) {
+    return db(this.table).where('id', id)
+      .del();
   }
 }
 

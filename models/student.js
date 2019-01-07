@@ -36,6 +36,11 @@ class Student {
   getStudents() {
     return db(this.table).select();
   }
+
+  deleteStudent(id) {
+    return db(this.table).where('id', id)
+      .del();
+  }
 }
 
 module.exports = new Student();

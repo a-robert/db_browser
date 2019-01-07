@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
   group.getGroups().then((result) => {
     return res.status(200).json(camelcaseKeys(result));
   }, (e) => {
-    sendError(res, 500, e)
+    sendError(res, 500, e);
   });
 });
 
@@ -37,7 +37,17 @@ router.get('/:id', (req, res) => {
   group.getGroup(req.params.id).then((result) => {
     return res.status(200).json(camelcaseKeys(result));
   }, (e) => {
-    sendError(res, 500, e)
+    sendError(res, 500, e);
+  });
+});
+
+router.delete('/:id', (req, res) => {
+  group.deleteGroup(req.params.id).then(() => {
+    return res.status(200).json({
+      status: 'OK'
+    });
+  }, (e) => {
+    sendError(res, 500, e);
   });
 });
 
@@ -53,7 +63,7 @@ router.put('/:id', (req, res) => {
       status: 'OK'
     });
   }, (e) => {
-    sendError(res, 500, e)
+    sendError(res, 500, e);
   });
 });
 

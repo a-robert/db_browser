@@ -19,7 +19,6 @@ function sendError(res, code, error) {
   });
 }
 
-
 /*
  ====================================================
  /HELPERS
@@ -28,9 +27,9 @@ function sendError(res, code, error) {
 
 router.get('/', (req, res) => {
   grade.getSummary().then((result) => {
-    return res.status(200).json(result);
+    return res.status(200).json(camelcaseKeys(result));
   }, (e) => {
-    sendError(res, 500, e)
+    sendError(res, 500, e);
   });
 });
 

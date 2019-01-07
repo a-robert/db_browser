@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
   subject.getSubjects().then((result) => {
     return res.status(200).json(camelcaseKeys(result));
   }, (e) => {
-    sendError(res, 500, e)
+    sendError(res, 500, e);
   });
 });
 
@@ -37,7 +37,17 @@ router.get('/:id', (req, res) => {
   subject.getSubject(req.params.id).then((result) => {
     return res.status(200).json(camelcaseKeys(result));
   }, (e) => {
-    sendError(res, 500, e)
+    sendError(res, 500, e);
+  });
+});
+
+router.delete('/:id', (req, res) => {
+  subject.deleteSubject(req.params.id).then(() => {
+    return res.status(200).json({
+      status: 'OK'
+    });
+  }, (e) => {
+    sendError(res, 500, e);
   });
 });
 

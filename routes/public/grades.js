@@ -42,6 +42,16 @@ router.get('/:id', (req, res) => {
   });
 });
 
+router.delete('/:id', (req, res) => {
+  grade.deleteGrade(req.params.id).then(() => {
+    return res.status(200).json({
+      status: 'OK'
+    });
+  }, (e) => {
+    sendError(res, 500, e);
+  });
+});
+
 router.put('/:id', (req, res) => {
   let studentId = req.body.studentId;
   let subjectId = req.body.subjectId;

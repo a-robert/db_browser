@@ -45,11 +45,16 @@ class Grade {
   }
 
   getGrade(id) {
-    return db(this.table).select().where('id', id)
+    return db(this.table).select().where('id', id);
   }
 
   getGrades() {
-    return db(this.table).select()
+    return db(this.table).select();
+  }
+
+  deleteGrade(id) {
+    return db(this.table).where('id', id)
+      .del();
   }
 }
 
