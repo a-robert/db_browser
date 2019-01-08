@@ -92,9 +92,11 @@ jQuery(function($) {
         $tRow.append($tdataTemplate.clone().text(obj[header]));
       });
 
-      $tRow
-        .append($tdataTemplate.clone().html('<i class="far fa-edit edit"></i>'))
-        .append($tdataTemplate.clone().html('<i class="far fa-trash-alt delete"></i>'));
+      if (api !== 'summary') {
+        $tRow
+          .append($tdataTemplate.clone().html('<i class="far fa-edit edit"></i>'))
+          .append($tdataTemplate.clone().html('<i class="far fa-trash-alt delete"></i>'));
+      }
 
       $tbody.append($tRow);
     });
@@ -132,7 +134,9 @@ jQuery(function($) {
           $addDataForm.append($formGroupTemplate.clone()
             .append(
               $labelTemplate.clone().text(field.name).attr('data-key', field.name)
-                .append($inputTemplate.clone().attr('id', field.name).val(values[field.name] || ''))
+                .append($inputTemplate.clone().attr('id', field.name).val(
+                  ((field.name === 'birthdate' && values[field.name]) ? values[field.name].split('T')[0] : values[field.name]) || ''
+                ))
             ));
         }
       });
@@ -150,7 +154,7 @@ jQuery(function($) {
     let $labels = $addDataForm.find('[data-key]');
     const isUpdate = $confirmButton.text() === 'Save';
 
-    for (let i = 0; i < $labels.length; i++ ) {
+    for (let i = 0; i < $labels.length; i++) {
       let $label = $($labels[i]);
       req[$label.attr('data-key')] = $label.find('input, select').val();
     }
@@ -173,9 +177,14 @@ jQuery(function($) {
 
   $dataTable.on('click', '.edit', async function() {
     const id = this.closest('tr').dataset.id;
+
+    if (!id) {
+      return alert('Edit is not supported');
+    }
+
     const action = this.closest('table').dataset.action;
 
-    const [ data ] = await fetch(`${API_URL}/${action}/${id}`).then(res => res.json());
+    const [data] = await fetch(`${API_URL}/${action}/${id}`).then(res => res.json());
 
     if (!data) {
       return;
@@ -186,6 +195,10 @@ jQuery(function($) {
     const id = this.closest('tr').dataset.id;
     const action = this.closest('table').dataset.action;
 
+    if (!id) {
+      return alert('Delete is not supported');
+    }
+
     if (!confirm('Are you sure you want delete this row')) {
       return;
     }
@@ -195,7 +208,7 @@ jQuery(function($) {
         method: 'DELETE'
       }).then(res => res.ok ? res.json() : Promise.reject());
       this.closest('tr').remove();
-    } catch {
+    } catch (e) {
       alert('Error happened');
     }
   });

@@ -54,7 +54,7 @@ router.delete('/:id', (req, res) => {
 router.put('/:id', (req, res) => {
   let group = req.body.group;
   let fullName = req.body.fullName;
-  let birthdate = req.body.birthDate;
+  let birthdate = req.body.birthdate;
   let address = req.body.address;
   let phoneNumber = req.body.phoneNumber;
 
@@ -74,7 +74,7 @@ router.put('/:id', (req, res) => {
 router.post('/', (req, res) => {
   let group = req.body.group;
   let fullName = req.body.fullName;
-  let birthdate = req.body.birthDate;
+  let birthdate = req.body.birthdate;
   let address = req.body.address;
   let phoneNumber = req.body.phoneNumber;
 
