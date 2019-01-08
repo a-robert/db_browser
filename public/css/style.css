@@ -1,0 +1,7 @@
+[class^='fa'] {
+    cursor: pointer;
+}
+
+table td:nth-last-child(-n + 2) {
+    width: 20px;
+}

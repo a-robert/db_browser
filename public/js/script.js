@@ -10,11 +10,14 @@ jQuery(function($) {
   let $inputTemplate = $('<input class="form-control" required>');
   let $selectTemplate = $('<select class="form-control"></select>');
   let $optionTemplate = $('<option></option>');
+  let $confirmButton = $('#confirm');
+
+  const API_URL = '/api';
 
   let _getData = url => {
     return $.ajax({
-      type: 'GET',
-      url: `/api/${url}`
+      method: 'GET',
+      url: `${API_URL}/${url}`
     });
   };
 
@@ -28,7 +31,7 @@ jQuery(function($) {
       route: '',
       value: ''
     }, {
-      name: 'birthDate',
+      name: 'birthdate',
       route: '',
       value: ''
     }, {
@@ -65,29 +68,33 @@ jQuery(function($) {
     }]
   };
 
-  let _displayData = (data) => {
+  let _displayData = (data, api) => {
     let headers = Object.keys(data[0]);
 
     let $theaderRow = $trowTemplate.clone();
 
-    headers.forEach((header) => {
+    headers.concat(Array(2).fill('')).forEach((header) => {
       $theaderRow.append($theadTemplate.clone().text(header));
     });
 
     $dataTable.html($('<thead></thead>').append($theaderRow));
+    $dataTable.attr('data-action', api);
 
     let $tbody = $('<tbody></tbody>');
 
-    data.sort((a, b) => {
-      return a.id > b.id;
-    });
+    data.sort((a, b) => a.id - b.id);
 
     data.forEach((obj) => {
       let $tRow = $trowTemplate.clone();
+      $tRow.attr('data-id', obj.id);
 
       headers.forEach((header) => {
         $tRow.append($tdataTemplate.clone().text(obj[header]));
       });
+
+      $tRow
+        .append($tdataTemplate.clone().html('<i class="far fa-edit edit"></i>'))
+        .append($tdataTemplate.clone().html('<i class="far fa-trash-alt delete"></i>'));
 
       $tbody.append($tRow);
     });
@@ -95,53 +102,53 @@ jQuery(function($) {
     $dataTable.append($tbody);
   };
 
-  $('.actions').on('click', '.get-info', (e) => {
-    _getData($(e.target).attr('data-api')).then(_displayData);
-  }).on('click', '.add-info', (e) => {
-    let api = $(e.target).attr('data-api');
+  function _prepareModal(api, values = {}) {
     let requirements = _fields[api].filter((field) => field.route);
     let pReq = [];
+    $confirmButton.text(arguments.length === 1 ? 'Add' : 'Save');
 
     requirements.forEach((requirement) => pReq.push(_getData(requirement.route)));
 
-    $.when.apply($, pReq).then(function() {
-      let data = pReq.length === 1 ? [[...arguments][0]] : [...arguments].map((d) => d[0]);
+    $.when(...pReq).then(function(...args) {
+      let data = pReq.length === 1 ? args.slice(0, 1) : args.map((d) => d[0]);
       let reqI = 0;
       $addDataForm.html('');
-      $addDataForm.attr('action', `/api/${api}`);
+      $addDataForm.attr('action', `${API_URL}/${api}` + (values.id ? `/${values.id}` : ''));
 
-      _fields[api].forEach((fieled) => {
-        if (fieled.route) {
+      _fields[api].forEach((field) => {
+        if (field.route) {
           let $select = $selectTemplate.clone();
 
           data[reqI++].forEach((req) => {
-            $select.append($optionTemplate.clone().text(req[fieled.value]).attr('value', req.id));
+            $select.append($optionTemplate.clone().text(req[field.value]).attr('value', req.id));
           });
 
           $addDataForm.append($formGroupTemplate.clone()
             .append(
-              $labelTemplate.clone().text(fieled.name).attr('data-key', fieled.name)
-                .append($select)
+              $labelTemplate.clone().text(field.name).attr('data-key', field.name)
+                .append($select.val(values[field.name] || ''))
             ));
         } else {
           $addDataForm.append($formGroupTemplate.clone()
             .append(
-              $labelTemplate.clone().text(fieled.name).attr('data-key', fieled.name)
-                .append($inputTemplate.clone().attr('id', fieled.name))
+              $labelTemplate.clone().text(field.name).attr('data-key', field.name)
+                .append($inputTemplate.clone().attr('id', field.name).val(values[field.name] || ''))
             ));
         }
       });
 
       $('.modal').modal();
     });
-  });
+  }
 
-  $addDataForm.on('submit', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  $('.actions').on('click', '.get-info', e => {
+    _getData(e.target.dataset.api).then(res => _displayData(res, e.target.dataset.api));
+  }).on('click', '.add-info', e => _prepareModal(e.target.dataset.api));
 
+  $addDataForm.on('submit', e => {
     let req = {};
     let $labels = $addDataForm.find('[data-key]');
+    const isUpdate = $confirmButton.text() === 'Save';
 
     for (let i = 0; i < $labels.length; i++ ) {
       let $label = $($labels[i]);
@@ -149,14 +156,47 @@ jQuery(function($) {
     }
 
     $.ajax({
-      type: 'post',
+      method: isUpdate ? 'PUT' : 'POST',
       url: $addDataForm.attr('action'),
       data: req
     }).then(() => {
       $('.modal').modal('hide');
-    }, (err) => {
+      const api = $addDataForm.attr('action').split('/')[2];
+      _getData(api).then(res => _displayData(res, api));
+    }, err => {
       console.error(err);
       alert('Error happened');
     });
+
+    return false;
+  });
+
+  $dataTable.on('click', '.edit', async function() {
+    const id = this.closest('tr').dataset.id;
+    const action = this.closest('table').dataset.action;
+
+    const [ data ] = await fetch(`${API_URL}/${action}/${id}`).then(res => res.json());
+
+    if (!data) {
+      return;
+    }
+
+    _prepareModal(action, data);
+  }).on('click', '.delete', async function() {
+    const id = this.closest('tr').dataset.id;
+    const action = this.closest('table').dataset.action;
+
+    if (!confirm('Are you sure you want delete this row')) {
+      return;
+    }
+
+    try {
+      await fetch(`${API_URL}/${action}/${id}`, {
+        method: 'DELETE'
+      }).then(res => res.ok ? res.json() : Promise.reject());
+      this.closest('tr').remove();
+    } catch {
+      alert('Error happened');
+    }
   });
 });
