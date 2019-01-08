@@ -94,8 +94,8 @@ jQuery(function($) {
 
       if (api !== 'summary') {
         $tRow
-          .append($tdataTemplate.clone().html('<i class="far fa-edit edit"></i>'))
-          .append($tdataTemplate.clone().html('<i class="far fa-trash-alt delete"></i>'));
+          .append($tdataTemplate.clone().html('<i class="far fa-edit edit" title="Փոփոխել"></i>'))
+          .append($tdataTemplate.clone().html('<i class="far fa-trash-alt delete" title="Ջնջել"></i>'));
       }
 
       $tbody.append($tRow);
@@ -107,7 +107,7 @@ jQuery(function($) {
   function _prepareModal(api, values = {}) {
     let requirements = _fields[api].filter((field) => field.route);
     let pReq = [];
-    $confirmButton.text(arguments.length === 1 ? 'Add' : 'Save');
+    $confirmButton.text(arguments.length === 1 ? 'Ավելացնել' : 'Փոփոխել');
 
     requirements.forEach((requirement) => pReq.push(_getData(requirement.route)));
 
@@ -199,7 +199,7 @@ jQuery(function($) {
       return alert('Delete is not supported');
     }
 
-    if (!confirm('Are you sure you want delete this row')) {
+    if (!confirm('Համոզված ե՞ք, որ ուզում եք ջնջել տվյալը։')) {
       return;
     }
 
